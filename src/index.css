@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f0f7f4;
+  --foreground: #1a2e1a;
+  --green-deep: #1B5E35;
+  --green-mid: #2E7D32;
+  --green-light: #43A047;
+  --teal: #00BFA5;
+  --teal-light: #80CBC4;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #a5d6a7; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2E7D32; }
+
+/* =====================================================
+   PRINT STYLES — A5 Landscape (210mm × 148mm)
+   Una sola hoja con dos mitades lado a lado
+   ===================================================== */
+@media print {
+  @page {
+    size: A5 landscape;
+    margin: 0;
+  }
+
+  body > *:not(#print-root) {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block !important;
+  }
+
+  .prescription-sheet {
+    width: 210mm !important;
+    height: 148mm !important;
+    display: flex !important;
+    flex-direction: row !important;
+    overflow: hidden !important;
+    background: white !important;
+  }
+
+  .prescription-half {
+    width: 105mm !important;
+    height: 148mm !important;
+    padding: 5mm 6mm !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .prescription-separator {
+    width: 0 !important;
+    border-left: 1px dashed #999 !important;
+    height: 148mm !important;
+    flex-shrink: 0 !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

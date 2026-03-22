@@ -1,0 +1,35 @@
+interface TreeLogoProps {
+  size?: number
+  className?: string
+}
+
+export default function TreeLogo({ size = 48, className = '' }: TreeLogoProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 56"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      {/* Trunk */}
+      <rect x="20" y="38" width="8" height="14" rx="3" fill="#1B5E35" />
+      {/* Roots */}
+      <path d="M20 50 Q14 52 12 55" stroke="#1B5E35" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M28 50 Q34 52 36 55" stroke="#1B5E35" strokeWidth="2" strokeLinecap="round" fill="none" />
+      {/* Lower foliage */}
+      <circle cx="24" cy="30" r="14" fill="#2E7D32" />
+      {/* Middle foliage */}
+      <circle cx="24" cy="20" r="11" fill="#388E3C" />
+      {/* Upper foliage */}
+      <circle cx="24" cy="13" r="8" fill="#43A047" />
+      {/* Teal highlight */}
+      <circle cx="30" cy="10" r="4" fill="#00BFA5" opacity="0.55" />
+      {/* Leaf dots */}
+      <circle cx="17" cy="27" r="2" fill="#A5D6A7" opacity="0.7" />
+      <circle cx="30" cy="24" r="1.5" fill="#A5D6A7" opacity="0.6" />
+      <circle cx="22" cy="17" r="1.5" fill="#80CBC4" opacity="0.7" />
+    </svg>
+  )
+}
