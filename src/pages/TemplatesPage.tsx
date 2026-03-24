@@ -16,11 +16,20 @@ export default function TemplatesPage() {
 
   useEffect(() => {
     if (!user) return
-    Promise.all([getProfile(), getTemplates()]).then(([prof, tmpl]) => {
-      setProfile(prof)
-      setTemplates(tmpl)
-      setLoading(false)
-    })
+
+    async function loadData() {
+      try {
+        const [prof, tmpl] = await Promise.all([getProfile(), getTemplates()])
+        setProfile(prof)
+        setTemplates(tmpl)
+      } catch (err) {
+        console.error('Error al cargar datos:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
   }, [user])
 
   function handleTemplateDeleted(id: string) {

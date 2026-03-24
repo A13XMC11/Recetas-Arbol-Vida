@@ -14,8 +14,18 @@ export default function TemplateCard({ template, onDelete }: TemplateCardProps) 
 
   async function handleDelete() {
     if (!confirm(`¿Eliminar la plantilla "${template.template_name}"?`)) return
-    await deleteTemplate(template.id)
-    onDelete(template.id)
+    try {
+      const result = await deleteTemplate(template.id)
+      if (result.error) {
+        console.error('Error al eliminar:', result.error)
+        alert('Error al eliminar: ' + result.error)
+        return
+      }
+      onDelete(template.id)
+    } catch (err) {
+      console.error('Error inesperado:', err)
+      alert('Error al eliminar. Intenta de nuevo.')
+    }
   }
 
   return (

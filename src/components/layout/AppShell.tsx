@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FileText, BookTemplate, Settings, LogOut, Stethoscope, Menu, X } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import TreeLogo from '@/components/logo/TreeLogo'
@@ -20,7 +20,9 @@ interface AppShellProps {
 
 export default function AppShell({ profile, children }: AppShellProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [logoutLoading, setLogoutLoading] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const pathname = location.pathname
 
   const initials = profile?.full_name
@@ -28,7 +30,21 @@ export default function AppShell({ profile, children }: AppShellProps) {
     : null
 
   async function handleLogout() {
-    await supabase.auth.signOut()
+    setLogoutLoading(true)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Error al cerrar sesión:', error)
+        alert('Error al cerrar sesión. Por favor intenta de nuevo.')
+        setLogoutLoading(false)
+        return
+      }
+      navigate('/login', { replace: true })
+    } catch (err) {
+      console.error('Error inesperado al cerrar sesión:', err)
+      alert('Error al cerrar sesión.')
+      setLogoutLoading(false)
+    }
   }
 
   function NavContent({ onNav }: { onNav?: () => void }) {
@@ -83,10 +99,11 @@ export default function AppShell({ profile, children }: AppShellProps) {
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors w-full px-2 py-1.5 rounded-lg hover:bg-white/10"
+            disabled={logoutLoading}
+            className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors w-full px-2 py-1.5 rounded-lg hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <LogOut size={15} />
-            Cerrar sesión
+            {logoutLoading ? 'Cerrando...' : 'Cerrar sesión'}
           </button>
         </div>
       </>

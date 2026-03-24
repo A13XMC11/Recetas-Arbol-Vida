@@ -17,14 +17,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!user) return
-    Promise.all([getProfile(), getPrescriptions(), getTemplates()]).then(
-      ([prof, presc, tmpl]) => {
+
+    async function loadData() {
+      try {
+        const [prof, presc, tmpl] = await Promise.all([
+          getProfile(),
+          getPrescriptions(),
+          getTemplates(),
+        ])
         setProfile(prof)
         setPrescriptions(presc)
         setTemplates(tmpl)
+      } catch (err) {
+        console.error('Error al cargar datos:', err)
+      } finally {
         setLoading(false)
       }
-    )
+    }
+
+    loadData()
   }, [user])
 
   function handlePrescriptionDeleted(id: string) {

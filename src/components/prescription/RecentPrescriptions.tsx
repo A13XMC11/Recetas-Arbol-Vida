@@ -13,8 +13,18 @@ interface RecentPrescriptionsProps {
 export default function RecentPrescriptions({ prescriptions, onDelete }: RecentPrescriptionsProps) {
   async function handleDelete(id: string) {
     if (!confirm('¿Eliminar esta receta?')) return
-    await deletePrescription(id)
-    onDelete(id)
+    try {
+      const result = await deletePrescription(id)
+      if (result.error) {
+        console.error('Error al eliminar:', result.error)
+        alert('Error al eliminar: ' + result.error)
+        return
+      }
+      onDelete(id)
+    } catch (err) {
+      console.error('Error inesperado:', err)
+      alert('Error al eliminar. Intenta de nuevo.')
+    }
   }
 
   return (

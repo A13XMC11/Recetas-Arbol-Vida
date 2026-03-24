@@ -69,34 +69,50 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
     }
 
     setSaving(true)
-    const meds = form.medications.map(({ id: _id, ...rest }) => rest)
+    try {
+      const meds = form.medications.map(({ id: _id, ...rest }) => rest)
 
-    const result = await createPrescription({
-      patient_name: form.patientName,
-      date: form.date,
-      medications: meds,
-      instructions: form.instructions,
-      next_appointment: form.nextAppointment,
-    })
+      const result = await createPrescription({
+        patient_name: form.patientName,
+        date: form.date,
+        medications: meds,
+        instructions: form.instructions,
+        next_appointment: form.nextAppointment,
+      })
 
-    setSaving(false)
+      if (result.error) {
+        console.error('Error al guardar:', result.error)
+        alert('Error al guardar: ' + result.error)
+        return
+      }
 
-    if (result.error) {
-      alert('Error al guardar: ' + result.error)
-      return
+      navigate(`/print/${result.data!.id}`)
+    } catch (err) {
+      console.error('Error inesperado:', err)
+      alert('Error inesperado al guardar la receta. Intenta de nuevo.')
+    } finally {
+      setSaving(false)
     }
-
-    navigate(`/print/${result.data!.id}`)
   }
 
   async function handleSaveTemplate(name: string) {
-    const meds = form.medications.map(({ id: _id, ...rest }) => rest)
-    await createTemplate({
-      template_name: name,
-      medications: meds,
-      instructions: form.instructions,
-    })
-    setShowTemplateModal(false)
+    try {
+      const meds = form.medications.map(({ id: _id, ...rest }) => rest)
+      const result = await createTemplate({
+        template_name: name,
+        medications: meds,
+        instructions: form.instructions,
+      })
+      if (result.error) {
+        console.error('Error al guardar plantilla:', result.error)
+        alert('Error al guardar plantilla: ' + result.error)
+        return
+      }
+      setShowTemplateModal(false)
+    } catch (err) {
+      console.error('Error inesperado al guardar plantilla:', err)
+      alert('Error al guardar plantilla. Intenta de nuevo.')
+    }
   }
 
   return (

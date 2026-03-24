@@ -23,12 +23,25 @@ export default function PrintPage() {
 
   useEffect(() => {
     if (!user || !id) return
-    Promise.all([getPrescriptionById(id), getProfile()]).then(([presc, prof]) => {
-      if (!presc) setNotFound(true)
-      setPrescription(presc)
-      setProfile(prof)
-      setLoading(false)
-    })
+
+    async function loadData() {
+      try {
+        const [presc, prof] = await Promise.all([getPrescriptionById(id), getProfile()])
+        if (!presc) {
+          setNotFound(true)
+        } else {
+          setPrescription(presc)
+          setProfile(prof)
+        }
+      } catch (err) {
+        console.error('Error al cargar datos:', err)
+        setNotFound(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
   }, [user, id])
 
   if (loading) {

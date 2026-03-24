@@ -9,11 +9,20 @@ interface SaveTemplateModalProps {
 export default function SaveTemplateModal({ onSave, onClose }: SaveTemplateModalProps) {
   const [name, setName] = useState('')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   async function handleSave() {
     if (!name.trim()) return
     setSaving(true)
-    await onSave(name.trim())
+    setError('')
+    try {
+      await onSave(name.trim())
+    } catch (err) {
+      console.error('Error al guardar plantilla:', err)
+      setError('Error al guardar. Intenta de nuevo.')
+      setSaving(false)
+      return
+    }
     setSaving(false)
   }
 
@@ -48,6 +57,12 @@ export default function SaveTemplateModal({ onSave, onClose }: SaveTemplateModal
           autoFocus
           className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 mb-4"
         />
+
+        {error && (
+          <div className="p-3 rounded-lg bg-red-50 border border-red-200 mb-4">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
 
         <div className="flex gap-3">
           <button

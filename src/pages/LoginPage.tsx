@@ -12,16 +12,30 @@ export default function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
+    if (!email.trim() || !password.trim()) {
+      setError('Por favor completa todos los campos.')
+      return
+    }
+
     setLoading(true)
     setError('')
 
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (authError) {
-      setError('Correo o contraseña incorrectos.')
+      if (authError) {
+        console.error('Error de autenticación:', authError)
+        setError('Correo o contraseña incorrectos.')
+        return
+      }
+
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      console.error('Error inesperado:', err)
+      setError('Error de conexión. Intenta de nuevo.')
+    } finally {
       setLoading(false)
-    } else {
-      navigate('/dashboard')
     }
   }
 

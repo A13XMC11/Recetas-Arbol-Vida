@@ -15,23 +15,44 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!user) return
-    getProfile().then(data => {
-      if (data) {
-        setProfile(data)
-        setForm({ full_name: data.full_name, specialty: data.specialty, phone: data.phone })
+
+    async function loadData() {
+      try {
+        const data = await getProfile()
+        if (data) {
+          setProfile(data)
+          setForm({ full_name: data.full_name, specialty: data.specialty, phone: data.phone })
+        }
+      } catch (err) {
+        console.error('Error al cargar perfil:', err)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
-    })
+    }
+
+    loadData()
   }, [user])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
-    await upsertProfile(form)
-    setProfile(prev => prev ? { ...prev, ...form } : { id: user!.id, ...form })
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    try {
+      const result = await upsertProfile(form)
+      if (result.error) {
+        console.error('Error al guardar perfil:', result.error)
+        alert('Error al guardar: ' + result.error)
+        setSaving(false)
+        return
+      }
+      setProfile(prev => prev ? { ...prev, ...form } : { id: user!.id, ...form })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (err) {
+      console.error('Error inesperado:', err)
+      alert('Error al guardar. Intenta de nuevo.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   if (loading) {
