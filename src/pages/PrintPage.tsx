@@ -22,11 +22,22 @@ export default function PrintPage() {
   const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
-    if (!user || !id) return
+    // 🔥 Corrección: manejar correctamente cuando id o user no existen
+    if (!user || !id) {
+      setLoading(false)
+      setNotFound(true)
+      return
+    }
+
+    const prescriptionId = id
 
     async function loadData() {
       try {
-        const [presc, prof] = await Promise.all([getPrescriptionById(id), getProfile()])
+        const [presc, prof] = await Promise.all([
+          getPrescriptionById(prescriptionId),
+          getProfile(),
+        ])
+
         if (!presc) {
           setNotFound(true)
         } else {
