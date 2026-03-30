@@ -20,7 +20,7 @@ export default function ScaledPreview({ children, naturalWidth, naturalHeight }:
     recalc()
     window.addEventListener('resize', recalc)
     return () => window.removeEventListener('resize', recalc)
-  }, [naturalWidth])
+  }, [naturalWidth, naturalHeight])
 
   return (
     <div ref={containerRef} className="w-full flex justify-center px-4">

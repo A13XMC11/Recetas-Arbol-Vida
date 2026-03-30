@@ -5,7 +5,7 @@
   color: var(--accent);
   background: var(--accent-bg);
   border: 2px solid transparent;
-  transition: border-color 0.3s;
+  transition: border-color 180ms var(--ease-out);
   margin-bottom: 24px;
 
   &:hover {
@@ -125,11 +125,16 @@
     align-items: center;
     gap: 8px;
     text-decoration: none;
-    transition: box-shadow 0.3s;
+    transition: all 180ms var(--ease-out);
 
     &:hover {
       box-shadow: var(--shadow);
+      transform: translateY(-2px);
     }
+    &:active {
+      transform: scale(0.95);
+    }
+
     .button-icon {
       height: 18px;
       width: 18px;
@@ -171,6 +176,7 @@
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
+    transition: border-color 180ms var(--ease-out);
   }
 
   &::before {

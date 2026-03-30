@@ -41,20 +41,33 @@ export default function RecentPrescriptions({ prescriptions, onDelete }: RecentP
         </div>
       ) : (
         <div className="space-y-2">
-          {prescriptions.map(p => (
+          {prescriptions.map((p, idx) => (
             <div
               key={p.id}
-              className="group flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors"
+              className="group flex items-start gap-3 p-3 rounded-xl"
+              style={{
+                transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
+                animationDelay: `${idx * 30}ms`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f9fafb'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }}
             >
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                style={{ background: '#1B5E3515' }}
+                className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                style={{
+                  background: '#1B5E3515',
+                  transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
+                }}
               >
                 <FileText size={14} style={{ color: '#1B5E35' }} />
               </div>
               <div className="flex-1 min-w-0">
                 <Link to={`/print/${p.id}`}>
-                  <p className="text-sm font-medium text-gray-800 truncate hover:underline">
+                  <p className="text-sm font-medium text-gray-800 truncate transition-colors duration-180 hover:underline">
                     {p.patient_name}
                   </p>
                 </Link>
@@ -68,7 +81,21 @@ export default function RecentPrescriptions({ prescriptions, onDelete }: RecentP
               </div>
               <button
                 onClick={() => handleDelete(p.id)}
-                className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
+                className="p-1.5 rounded-lg text-gray-300 shrink-0"
+                style={{
+                  transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
+                  opacity: 0,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '1'
+                  e.currentTarget.style.color = '#ef4444'
+                  e.currentTarget.style.backgroundColor = '#fee2e2'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '0'
+                  e.currentTarget.style.color = '#d1d5db'
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                }}
               >
                 <Trash2 size={13} />
               </button>

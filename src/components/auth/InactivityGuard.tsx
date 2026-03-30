@@ -29,17 +29,35 @@ export default function InactivityGuard() {
 
   useEffect(() => {
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll']
-    const handler = () => reset()
+    let isPrinting = false
+
+    const handler = () => {
+      // No resetear timeout mientras se imprime (evita que el diálogo de impresión interfiera)
+      if (isPrinting) return
+      reset()
+    }
+
+    // Detectar cuándo se abre el diálogo de impresión
+    const beforePrint = () => {
+      isPrinting = true
+    }
+    const afterPrint = () => {
+      isPrinting = false
+    }
 
     events.forEach(e => window.addEventListener(e, handler, { passive: true }))
+    window.addEventListener('beforeprint', beforePrint)
+    window.addEventListener('afterprint', afterPrint)
     reset()
 
     return () => {
       events.forEach(e => window.removeEventListener(e, handler))
+      window.removeEventListener('beforeprint', beforePrint)
+      window.removeEventListener('afterprint', afterPrint)
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
       if (warningRef.current) clearTimeout(warningRef.current)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [navigate])
 
   if (!showWarning) return null
 

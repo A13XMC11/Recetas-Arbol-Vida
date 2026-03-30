@@ -79,7 +79,7 @@ export default function PrintPage() {
 
       {/* Vista en pantalla */}
       <div className="min-h-screen flex flex-col" style={{ background: '#e8f5e9' }}>
-        <PrintControls />
+        <PrintControls disabled={loading} />
 
         <div className="flex-1 flex flex-col items-center justify-center py-8">
           <ScaledPreview naturalWidth={A5_W} naturalHeight={A5_H}>

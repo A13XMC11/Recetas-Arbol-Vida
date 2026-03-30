@@ -213,8 +213,22 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
             type="button"
             onClick={handleSaveAndPrint}
             disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-sm transition-opacity disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, #1B5E35 0%, #00BFA5 100%)' }}
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-sm"
+            style={{
+              background: 'linear-gradient(135deg, #1B5E35 0%, #00BFA5 100%)',
+              transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
+              opacity: saving ? 0.6 : 1,
+              transform: saving ? 'scale(0.98)' : 'scale(1)',
+            }}
+            onMouseDown={(e) => {
+              if (!saving) e.currentTarget.style.transform = 'scale(0.96)'
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
           >
             <Printer size={16} />
             {saving ? 'Guardando...' : 'Guardar e Imprimir'}
@@ -223,8 +237,24 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
           <button
             type="button"
             onClick={() => setShowTemplateModal(true)}
-            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 font-medium text-sm transition-colors"
-            style={{ borderColor: '#00BFA5', color: '#00897B' }}
+            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 font-medium text-sm"
+            style={{
+              borderColor: '#00BFA5',
+              color: '#00897B',
+              transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.transform = 'scale(0.96)'
+              e.currentTarget.style.backgroundColor = '#f0f7f4'
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+              e.currentTarget.style.backgroundColor = 'transparent'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+              e.currentTarget.style.backgroundColor = 'transparent'
+            }}
           >
             <BookmarkPlus size={16} />
             Guardar como plantilla
@@ -241,7 +271,22 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
                 nextAppointment: '',
               })
             }}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 font-medium text-sm transition-colors"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-gray-500 font-medium text-sm"
+            style={{
+              transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
+            }}
+            onMouseDown={(e) => {
+              e.currentTarget.style.transform = 'scale(0.96)'
+              e.currentTarget.style.backgroundColor = '#f5f5f5'
+            }}
+            onMouseUp={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+              e.currentTarget.style.backgroundColor = 'transparent'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+              e.currentTarget.style.backgroundColor = 'transparent'
+            }}
           >
             <Save size={16} />
             Nueva receta
