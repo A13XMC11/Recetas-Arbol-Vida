@@ -12,6 +12,7 @@ export interface Profile {
   full_name: string;
   specialty: string;
   phone: string;
+  role: 'doctor' | 'admin';
   updated_at?: string;
 }
 
@@ -81,3 +82,35 @@ export const POSOLOGY_PRESETS = [
   'Según necesidad',
   'En ayunas',
 ];
+
+// Inventory
+export const INVENTORY_CATEGORIES = ['Medicamentos', 'Insumos', 'Limpieza', 'Otros'] as const;
+export type InventoryCategory = typeof INVENTORY_CATEGORIES[number];
+
+export const INVENTORY_UNITS = ['unidad', 'caja', 'frasco', 'ampolla', 'par', 'paquete', 'rollo', 'litro', 'sobre'] as const;
+export type InventoryUnit = typeof INVENTORY_UNITS[number];
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  category: InventoryCategory;
+  unit: InventoryUnit;
+  min_stock: number;
+  created_at: string;
+  created_by: string;
+}
+
+export interface InventoryMovement {
+  id: string;
+  item_id: string;
+  type: 'entrada' | 'salida';
+  quantity: number;
+  notes: string | null;
+  created_at: string;
+  created_by: string;
+}
+
+export interface InventoryItemWithStock extends InventoryItem {
+  current_stock: number;
+  last_restock: string | null;
+}

@@ -1,17 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { FileText, BookTemplate, Settings, LogOut, Stethoscope, Menu, X } from 'lucide-react'
+import { FileText, BookTemplate, Settings, LogOut, Stethoscope, Menu, X, Package } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/useAuth'
+import { getLowStockCount } from '@/lib/api/inventory'
 import TreeLogo from '@/components/logo/TreeLogo'
 import InactivityGuard from '@/components/auth/InactivityGuard'
 import type { Profile } from '@/types'
 import { cn } from '@/lib/utils/cn'
 
-const NAV_ITEMS = [
+const DOCTOR_NAV = [
   { href: '/dashboard', icon: FileText, label: 'Nueva Receta' },
   { href: '/templates', icon: BookTemplate, label: 'Plantillas' },
   { href: '/settings', icon: Settings, label: 'Configuración' },
 ]
+
+const ADMIN_EXTRA = { href: '/inventory', icon: Package, label: 'Inventario' }
 
 interface AppShellProps {
   profile: Profile | null
@@ -21,9 +25,20 @@ interface AppShellProps {
 export default function AppShell({ profile, children }: AppShellProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)
+  const [lowStockCount, setLowStockCount] = useState(0)
+  const { role } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
   const pathname = location.pathname
+
+  useEffect(() => {
+    if (role !== 'admin') return
+    getLowStockCount().then(setLowStockCount)
+  }, [role, pathname])
+
+  const navItems = role === 'admin'
+    ? [...DOCTOR_NAV, ADMIN_EXTRA]
+    : DOCTOR_NAV
 
   const initials = profile?.full_name
     ? profile.full_name.replace(/^Dra?\.\s*/i, '').charAt(0).toUpperCase()
@@ -61,8 +76,9 @@ export default function AppShell({ profile, children }: AppShellProps) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-5 space-y-1">
-          {NAV_ITEMS.map(({ href, icon: Icon, label }) => {
+          {navItems.map(({ href, icon: Icon, label }) => {
             const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
+            const isInventory = href === '/inventory'
             return (
               <Link
                 key={href}
@@ -76,7 +92,12 @@ export default function AppShell({ profile, children }: AppShellProps) {
                 )}
               >
                 <Icon size={18} />
-                {label}
+                <span className="flex-1">{label}</span>
+                {isInventory && lowStockCount > 0 && !active && (
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs font-bold leading-none">
+                    {lowStockCount > 9 ? '9+' : lowStockCount}
+                  </span>
+                )}
               </Link>
             )
           })}
@@ -121,19 +142,30 @@ export default function AppShell({ profile, children }: AppShellProps) {
       </aside>
 
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 shadow-md"
+      <div
+        className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 shadow-md"
         style={{ background: 'linear-gradient(135deg, #1B5E35, #00897B)' }}
       >
         <div className="flex items-center gap-3">
           <TreeLogo size={28} />
           <span className="text-white font-bold text-sm">Árbol de Vida</span>
         </div>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          <Menu size={22} />
-        </button>
+        <div className="flex items-center gap-2">
+          {lowStockCount > 0 && role === 'admin' && (
+            <Link
+              to="/inventory"
+              className="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-xs font-bold"
+            >
+              {lowStockCount > 9 ? '9+' : lowStockCount}
+            </Link>
+          )}
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <Menu size={22} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer overlay */}

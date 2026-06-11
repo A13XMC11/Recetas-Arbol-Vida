@@ -6,7 +6,7 @@ import { Save, CheckCircle, UserCircle } from 'lucide-react'
 import type { Profile } from '@/types'
 
 export default function SettingsPage() {
-  const { user } = useAuth()
+  const { user, role } = useAuth()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [form, setForm] = useState({ full_name: '', specialty: 'Medicina General', phone: '' })
   const [loading, setLoading] = useState(true)
@@ -44,7 +44,7 @@ export default function SettingsPage() {
         setSaving(false)
         return
       }
-      setProfile(prev => prev ? { ...prev, ...form } : { id: user!.id, ...form })
+      setProfile(prev => prev ? { ...prev, ...form } : { id: user!.id, role: role ?? 'doctor', ...form })
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err) {
