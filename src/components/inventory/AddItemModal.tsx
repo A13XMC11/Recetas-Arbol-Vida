@@ -15,6 +15,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
     category: 'Otros' as InventoryCategory,
     unit: 'unidad' as InventoryUnit,
     min_stock: 5,
+    barcode: '',
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -24,7 +25,10 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
     if (!form.name.trim()) return
     setSaving(true)
     setError(null)
-    const result = await createInventoryItem(form)
+    const result = await createInventoryItem({
+      ...form,
+      barcode: form.barcode.trim() || undefined,
+    })
     if (result.error) {
       setError(result.error)
       setSaving(false)
@@ -95,6 +99,19 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
               onChange={e => setForm(f => ({ ...f, min_stock: Math.max(1, parseInt(e.target.value) || 1) }))}
               min={1}
               className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              Código de barras (opcional — si el producto lo tiene)
+            </label>
+            <input
+              type="text"
+              value={form.barcode}
+              onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))}
+              placeholder="Ej: 7501000000000"
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 font-mono"
             />
           </div>
 

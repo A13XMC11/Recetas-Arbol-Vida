@@ -96,6 +96,7 @@ export interface InventoryItem {
   category: InventoryCategory;
   unit: InventoryUnit;
   min_stock: number;
+  barcode: string | null;
   created_at: string;
   created_by: string;
 }

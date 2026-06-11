@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowDownCircle, ArrowUpCircle, Trash2 } from 'lucide-react'
+import { ArrowLeft, ArrowDownCircle, ArrowUpCircle, Trash2, ScanLine } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import AppShell from '@/components/layout/AppShell'
 import StockBadge from '@/components/inventory/StockBadge'
@@ -99,14 +99,22 @@ export default function InventoryItemPage() {
               <StockBadge current={item.current_stock} minimum={item.min_stock} unit={item.unit} />
             </div>
 
-            {item.last_restock && (
-              <p className="text-xs text-gray-400 mb-4">
-                Último ingreso:{' '}
-                {new Date(item.last_restock).toLocaleDateString('es-ES', {
-                  day: '2-digit', month: 'long', year: 'numeric',
-                })}
-              </p>
-            )}
+            <div className="flex flex-wrap gap-3 mt-2 mb-1">
+              {item.last_restock && (
+                <p className="text-xs text-gray-400">
+                  Último ingreso:{' '}
+                  {new Date(item.last_restock).toLocaleDateString('es-ES', {
+                    day: '2-digit', month: 'long', year: 'numeric',
+                  })}
+                </p>
+              )}
+              {item.barcode && (
+                <p className="text-xs text-gray-400 flex items-center gap-1">
+                  <ScanLine size={12} />
+                  <span className="font-mono">{item.barcode}</span>
+                </p>
+              )}
+            </div>
 
             {/* Acciones */}
             <div className="flex gap-2">

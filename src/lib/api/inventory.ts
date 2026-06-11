@@ -44,11 +44,33 @@ export async function getLowStockCount(): Promise<number> {
   return items.filter(i => i.current_stock < i.min_stock).length
 }
 
+export async function getInventoryItemByBarcode(barcode: string): Promise<InventoryItemWithStock | null> {
+  const { data, error } = await supabase
+    .from('inventory_items')
+    .select('*, inventory_movements(*)')
+    .eq('barcode', barcode)
+    .single()
+
+  if (error || !data) return null
+  return computeStock(data as RawItem)
+}
+
+export async function assignBarcode(itemId: string, barcode: string): Promise<{ error?: string }> {
+  const { error } = await supabase
+    .from('inventory_items')
+    .update({ barcode })
+    .eq('id', itemId)
+
+  if (error) return { error: error.message }
+  return {}
+}
+
 export async function createInventoryItem(data: {
   name: string
   category: InventoryCategory
   unit: InventoryUnit
   min_stock: number
+  barcode?: string
 }): Promise<{ data?: InventoryItem; error?: string }> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'No autenticado' }

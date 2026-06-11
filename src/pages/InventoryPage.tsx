@@ -1,16 +1,25 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, ArrowDownCircle, ArrowUpCircle, Package, ChevronRight } from 'lucide-react'
+import { Plus, ArrowDownCircle, ArrowUpCircle, Package, ChevronRight, ScanLine } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import AppShell from '@/components/layout/AppShell'
 import StockBadge from '@/components/inventory/StockBadge'
 import AddItemModal from '@/components/inventory/AddItemModal'
 import MovementModal from '@/components/inventory/MovementModal'
 import LowStockSummary from '@/components/inventory/LowStockSummary'
-import { getInventoryWithStock } from '@/lib/api/inventory'
+import BarcodeScanner from '@/components/inventory/BarcodeScanner'
+import QuickMovementModal from '@/components/inventory/QuickMovementModal'
+import AssignBarcodeModal from '@/components/inventory/AssignBarcodeModal'
+import { getInventoryWithStock, getInventoryItemByBarcode } from '@/lib/api/inventory'
 import { getProfile } from '@/lib/api/profiles'
 import type { Profile, InventoryItemWithStock } from '@/types'
 import { INVENTORY_CATEGORIES } from '@/types'
+
+type ScanState =
+  | { phase: 'idle' }
+  | { phase: 'scanning' }
+  | { phase: 'found'; item: InventoryItemWithStock }
+  | { phase: 'not_found'; barcode: string }
 
 export default function InventoryPage() {
   const { user } = useAuth()
@@ -21,6 +30,7 @@ export default function InventoryPage() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [movementTarget, setMovementTarget] = useState<{ item: InventoryItemWithStock; type: 'entrada' | 'salida' } | null>(null)
   const [activeCategory, setActiveCategory] = useState<string>('Todos')
+  const [scanState, setScanState] = useState<ScanState>({ phase: 'idle' })
 
   const loadData = useCallback(async () => {
     const [prof, inv] = await Promise.all([getProfile(), getInventoryWithStock()])
@@ -33,6 +43,16 @@ export default function InventoryPage() {
     if (!user) return
     loadData()
   }, [user, loadData])
+
+  async function handleBarcodeDetected(barcode: string) {
+    setScanState({ phase: 'idle' }) // cierra la cámara primero
+    const item = await getInventoryItemByBarcode(barcode)
+    if (item) {
+      setScanState({ phase: 'found', item })
+    } else {
+      setScanState({ phase: 'not_found', barcode })
+    }
+  }
 
   const categories = ['Todos', ...INVENTORY_CATEGORIES]
   const filtered = activeCategory === 'Todos'
@@ -53,28 +73,48 @@ export default function InventoryPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Inventario</h1>
               <p className="text-gray-500 text-sm mt-1">
-                {items.length} {items.length === 1 ? 'producto registrado' : 'productos registrados'}
+                {items.length} {items.length === 1 ? 'producto' : 'productos'}
               </p>
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #1B5E35, #00BFA5)' }}
-            >
-              <Plus size={16} />
-              <span className="hidden sm:inline">Nuevo producto</span>
-              <span className="sm:hidden">Nuevo</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setScanState({ phase: 'scanning' })}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all"
+                style={{ borderColor: '#00BFA5', color: '#00897B' }}
+                title="Escanear código de barras"
+              >
+                <ScanLine size={16} />
+                <span className="hidden sm:inline">Escanear</span>
+              </button>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #1B5E35, #00BFA5)' }}
+              >
+                <Plus size={16} />
+                <span className="hidden sm:inline">Nuevo</span>
+              </button>
+            </div>
           </div>
 
-          {/* Alertas de stock bajo */}
+          {/* Banner escanear — visible en móvil como acceso rápido */}
+          <button
+            onClick={() => setScanState({ phase: 'scanning' })}
+            className="sm:hidden w-full flex items-center justify-center gap-3 py-4 rounded-2xl border-2 border-dashed mb-5 transition-colors active:scale-95"
+            style={{ borderColor: '#00BFA5', color: '#00897B', background: '#f0fdfa' }}
+          >
+            <ScanLine size={22} />
+            <span className="font-semibold text-sm">Escanear código de barras</span>
+          </button>
+
+          {/* Alertas stock bajo */}
           <LowStockSummary items={items} />
 
-          {/* Filtro por categoría */}
+          {/* Filtro categoría */}
           {items.length > 0 && (
             <div className="flex gap-2 overflow-x-auto pb-1 mb-4" style={{ scrollbarWidth: 'none' }}>
               {categories.map(cat => (
@@ -94,14 +134,14 @@ export default function InventoryPage() {
             </div>
           )}
 
-          {/* Lista de productos */}
+          {/* Lista */}
           {items.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-16 flex flex-col items-center gap-3">
               <Package size={40} className="text-gray-200" />
               <p className="text-gray-400 text-sm font-medium">Sin productos aún</p>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="text-sm font-semibold transition-colors"
+                className="text-sm font-semibold"
                 style={{ color: '#1B5E35' }}
               >
                 Agregar el primer producto
@@ -110,9 +150,7 @@ export default function InventoryPage() {
           ) : (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               {filtered.length === 0 ? (
-                <p className="text-center py-10 text-gray-400 text-sm">
-                  Sin productos en esta categoría.
-                </p>
+                <p className="text-center py-10 text-gray-400 text-sm">Sin productos en esta categoría.</p>
               ) : (
                 <div className="divide-y divide-gray-50">
                   {filtered.map(item => (
@@ -120,7 +158,6 @@ export default function InventoryPage() {
                       key={item.id}
                       className="flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/70 transition-colors"
                     >
-                      {/* Info — clickeable para ir al historial */}
                       <div
                         className="flex-1 min-w-0 cursor-pointer"
                         onClick={() => navigate(`/inventory/${item.id}`)}
@@ -131,20 +168,12 @@ export default function InventoryPage() {
                         </div>
                         <p className="text-xs text-gray-400 mt-0.5">{item.category}</p>
                       </div>
-
-                      {/* Badge de stock */}
-                      <StockBadge
-                        current={item.current_stock}
-                        minimum={item.min_stock}
-                        unit={item.unit}
-                      />
-
-                      {/* Botones rápidos entrada/salida */}
+                      <StockBadge current={item.current_stock} minimum={item.min_stock} unit={item.unit} />
                       <div className="flex gap-1 flex-shrink-0">
                         <button
                           onClick={() => setMovementTarget({ item, type: 'entrada' })}
                           className="p-2 rounded-xl text-emerald-600 hover:bg-emerald-50 transition-colors"
-                          title="Registrar entrada"
+                          title="Entrada"
                         >
                           <ArrowDownCircle size={18} />
                         </button>
@@ -152,7 +181,7 @@ export default function InventoryPage() {
                           onClick={() => setMovementTarget({ item, type: 'salida' })}
                           disabled={item.current_stock === 0}
                           className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                          title="Registrar salida"
+                          title="Salida"
                         >
                           <ArrowUpCircle size={18} />
                         </button>
@@ -166,6 +195,7 @@ export default function InventoryPage() {
         </div>
       </div>
 
+      {/* Modales */}
       {showAddModal && (
         <AddItemModal
           onCreated={() => { setShowAddModal(false); loadData() }}
@@ -179,6 +209,30 @@ export default function InventoryPage() {
           defaultType={movementTarget.type}
           onCreated={() => { setMovementTarget(null); loadData() }}
           onClose={() => setMovementTarget(null)}
+        />
+      )}
+
+      {scanState.phase === 'scanning' && (
+        <BarcodeScanner
+          onDetected={handleBarcodeDetected}
+          onClose={() => setScanState({ phase: 'idle' })}
+        />
+      )}
+
+      {scanState.phase === 'found' && (
+        <QuickMovementModal
+          item={scanState.item}
+          onDone={() => { setScanState({ phase: 'idle' }); loadData() }}
+          onClose={() => setScanState({ phase: 'idle' })}
+        />
+      )}
+
+      {scanState.phase === 'not_found' && (
+        <AssignBarcodeModal
+          barcode={scanState.barcode}
+          items={items}
+          onAssigned={() => { setScanState({ phase: 'idle' }); loadData() }}
+          onClose={() => setScanState({ phase: 'idle' })}
         />
       )}
     </AppShell>
