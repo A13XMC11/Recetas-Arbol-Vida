@@ -33,10 +33,15 @@ export default function InventoryPage() {
   const [scanState, setScanState] = useState<ScanState>({ phase: 'idle' })
 
   const loadData = useCallback(async () => {
-    const [prof, inv] = await Promise.all([getProfile(), getInventoryWithStock()])
-    setProfile(prof)
-    setItems(inv)
-    setLoading(false)
+    try {
+      const [prof, inv] = await Promise.all([getProfile(), getInventoryWithStock()])
+      setProfile(prof)
+      setItems(inv)
+    } catch {
+      // error de red — dejamos los datos actuales y cerramos el spinner
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => {

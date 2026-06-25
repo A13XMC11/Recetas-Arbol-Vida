@@ -25,16 +25,21 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
     if (!form.name.trim()) return
     setSaving(true)
     setError(null)
-    const result = await createInventoryItem({
-      ...form,
-      barcode: form.barcode.trim() || undefined,
-    })
-    if (result.error) {
-      setError(result.error)
+    try {
+      const result = await createInventoryItem({
+        ...form,
+        barcode: form.barcode.trim() || undefined,
+      })
+      if (result.error) {
+        setError(result.error)
+        setSaving(false)
+        return
+      }
+      onCreated()
+    } catch {
+      setError('Error de conexión. Por favor intenta de nuevo.')
       setSaving(false)
-      return
     }
-    onCreated()
   }
 
   return (
