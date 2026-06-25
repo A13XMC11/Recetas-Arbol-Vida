@@ -120,11 +120,11 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
       <div className="space-y-6">
         <TemplateSelector templates={templates} onLoad={loadTemplate} />
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-          <h2 className="text-base font-semibold text-gray-800 mb-4">Datos del paciente</h2>
+        <div className="bg-white rounded-2xl shadow-sm border border-[#DCE8DF] p-5">
+          <h2 className="text-sm font-semibold text-[#0D1F17] mb-4 tracking-tight">Datos del paciente</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              <label className="block text-xs font-semibold text-[#5A7063] mb-1.5">
                 Nombre del paciente *
               </label>
               <input
@@ -132,25 +132,25 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
                 value={form.patientName}
                 onChange={e => setForm(f => ({ ...f, patientName: e.target.value }))}
                 placeholder="Nombre completo"
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+                className="w-full px-3 py-2.5 rounded-xl border border-[#DCE8DF] bg-[#F8FAF9] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300 transition-[border-color,box-shadow] text-[#0D1F17] placeholder-[#9DB5A4]"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              <label className="block text-xs font-semibold text-[#5A7063] mb-1.5">
                 Fecha
               </label>
               <input
                 type="date"
                 value={form.date}
                 onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+                className="w-full px-3 py-2.5 rounded-xl border border-[#DCE8DF] bg-[#F8FAF9] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300 transition-[border-color,box-shadow] text-[#0D1F17]"
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-          <h2 className="text-base font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-[#DCE8DF] p-5">
+          <h2 className="text-sm font-semibold text-[#0D1F17] mb-4 tracking-tight">
             Rp. — Medicamentos
           </h2>
           <MedicationList
@@ -161,11 +161,11 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-          <h2 className="text-base font-semibold text-gray-800 mb-4">Indicaciones</h2>
+        <div className="bg-white rounded-2xl shadow-sm border border-[#DCE8DF] p-5">
+          <h2 className="text-sm font-semibold text-[#0D1F17] mb-4 tracking-tight">Indicaciones</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              <label className="block text-xs font-semibold text-[#5A7063] mb-1.5">
                 Indicaciones y cuidados
               </label>
               <textarea
@@ -173,11 +173,11 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
                 onChange={e => setForm(f => ({ ...f, instructions: e.target.value }))}
                 placeholder="Ej: Reposo relativo, hidratación abundante, evitar esfuerzo físico..."
                 rows={4}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 resize-none"
+                className="w-full px-3 py-2.5 rounded-xl border border-[#DCE8DF] bg-[#F8FAF9] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300 transition-[border-color,box-shadow] text-[#0D1F17] placeholder-[#9DB5A4] resize-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              <label className="block text-xs font-semibold text-[#5A7063] mb-1.5">
                 Próxima cita
               </label>
               <input
@@ -185,7 +185,7 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
                 value={form.nextAppointment}
                 onChange={e => setForm(f => ({ ...f, nextAppointment: e.target.value }))}
                 placeholder="Ej: En 7 días, 25 de marzo de 2026"
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+                className="w-full px-3 py-2.5 rounded-xl border border-[#DCE8DF] bg-[#F8FAF9] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-300 transition-[border-color,box-shadow] text-[#0D1F17] placeholder-[#9DB5A4]"
               />
             </div>
           </div>
@@ -213,9 +213,9 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
             type="button"
             onClick={handleSaveAndPrint}
             disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-sm"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-sm cursor-pointer"
             style={{
-              background: 'linear-gradient(135deg, #1B5E35 0%, #00BFA5 100%)',
+              background: 'linear-gradient(135deg, #0C1E14 0%, #1B5E35 55%, #00A896 100%)',
               transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
               opacity: saving ? 0.6 : 1,
               transform: saving ? 'scale(0.98)' : 'scale(1)',
@@ -237,9 +237,9 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
           <button
             type="button"
             onClick={() => setShowTemplateModal(true)}
-            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 font-medium text-sm"
+            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border-2 font-semibold text-sm cursor-pointer"
             style={{
-              borderColor: '#00BFA5',
+              borderColor: '#00A896',
               color: '#00897B',
               transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
             }}
@@ -271,7 +271,7 @@ export default function PrescriptionForm({ profile, templates }: PrescriptionFor
                 nextAppointment: '',
               })
             }}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-gray-500 font-medium text-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-[#DCE8DF] text-[#5A7063] font-medium text-sm cursor-pointer"
             style={{
               transition: 'all 180ms cubic-bezier(0.23, 1, 0.32, 1)',
             }}

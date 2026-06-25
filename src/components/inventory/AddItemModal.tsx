@@ -122,8 +122,8 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+    <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-bold text-gray-900">Nuevo producto</h2>
           <button
@@ -146,7 +146,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
               placeholder="Ej: Lidocaína 2%, Jeringas 5ml, Fundas de basura"
               required
               autoFocus
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800 placeholder-gray-400"
             />
           </div>
 
@@ -156,7 +156,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
               <select
                 value={form.category}
                 onChange={e => setForm(f => ({ ...f, category: e.target.value as InventoryCategory }))}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 bg-white"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800 bg-white"
               >
                 {INVENTORY_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -166,7 +166,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
               <select
                 value={form.unit}
                 onChange={e => setForm(f => ({ ...f, unit: e.target.value as InventoryUnit }))}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 bg-white"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800 bg-white"
               >
                 {INVENTORY_UNITS.map(u => <option key={u} value={u}>{u}</option>)}
               </select>
@@ -183,7 +183,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
                 value={form.min_stock}
                 onChange={e => setForm(f => ({ ...f, min_stock: Math.max(1, parseInt(e.target.value) || 1) }))}
                 min={1}
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800"
               />
             </div>
             <div>
@@ -196,7 +196,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
                 onChange={e => setForm(f => ({ ...f, initial_stock: Math.max(0, parseInt(e.target.value) || 0) }))}
                 min={0}
                 placeholder="0"
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800"
               />
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
                   value={form.barcode}
                   onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))}
                   placeholder="Escríbelo o escanéalo"
-                  className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 font-mono ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800 placeholder-gray-400 font-mono ${
                     scanSuccess ? 'border-emerald-400 bg-emerald-50' : 'border-gray-200'
                   }`}
                 />
@@ -228,7 +228,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
                 <button
                   type="button"
                   onClick={scanning ? stopScanner : startScanner}
-                  className={`px-3 py-2.5 rounded-xl border text-sm font-medium transition-all flex items-center gap-1.5 shrink-0 ${
+                  className={`px-3 py-2.5 rounded-xl border text-sm font-medium transition-[background-color,border-color,color,opacity] flex items-center gap-1.5 shrink-0 ${
                     scanning
                       ? 'border-red-200 text-red-600 bg-red-50 hover:bg-red-100'
                       : 'border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
@@ -273,7 +273,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
             <button
               type="submit"
               disabled={saving || !form.name.trim()}
-              className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold disabled:opacity-60 transition-all"
+              className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold disabled:opacity-60 transition-[background-color,border-color,color,opacity]"
               style={{ background: 'linear-gradient(135deg, #1B5E35, #00BFA5)' }}
             >
               {saving ? 'Guardando...' : 'Agregar producto'}

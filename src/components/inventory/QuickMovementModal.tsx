@@ -42,8 +42,8 @@ export default function QuickMovementModal({ item, onDone, onClose }: QuickMovem
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
-      <div className="bg-white w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden">
+    <div className="modal-overlay fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
+      <div className="sheet-panel bg-white w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden">
 
         {/* Handle bar móvil */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
@@ -82,7 +82,7 @@ export default function QuickMovementModal({ item, onDone, onClose }: QuickMovem
             <div className="grid grid-cols-2 gap-2 mb-5">
               <button
                 onClick={() => { setType('salida'); setError(null) }}
-                className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium border-2 transition-[background-color,border-color,color,opacity] ${
                   type === 'salida'
                     ? 'border-red-400 bg-red-50 text-red-700'
                     : 'border-gray-200 text-gray-400 hover:border-gray-300'
@@ -93,7 +93,7 @@ export default function QuickMovementModal({ item, onDone, onClose }: QuickMovem
               </button>
               <button
                 onClick={() => { setType('entrada'); setError(null) }}
-                className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium border-2 transition-[background-color,border-color,color,opacity] ${
                   type === 'entrada'
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                     : 'border-gray-200 text-gray-400 hover:border-gray-300'
@@ -110,7 +110,7 @@ export default function QuickMovementModal({ item, onDone, onClose }: QuickMovem
                 <button
                   key={n}
                   onClick={() => { setQuantity(n); setError(null) }}
-                  className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-[background-color,border-color,color,opacity] ${
                     quantity === n
                       ? 'text-white shadow-sm'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -157,7 +157,7 @@ export default function QuickMovementModal({ item, onDone, onClose }: QuickMovem
             <button
               onClick={handleConfirm}
               disabled={saving}
-              className="w-full py-4 rounded-2xl text-white font-bold text-base disabled:opacity-60 transition-all active:scale-95"
+              className="w-full py-4 rounded-2xl text-white font-bold text-base disabled:opacity-60 transition-[background-color,border-color,color,opacity] active:scale-95"
               style={{
                 background: type === 'salida'
                   ? 'linear-gradient(135deg, #b91c1c, #ef4444)'

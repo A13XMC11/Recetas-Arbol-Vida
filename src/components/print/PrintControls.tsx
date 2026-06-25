@@ -27,7 +27,7 @@ export default function PrintControls({ disabled = false }: PrintControlsProps) 
       <button
         onClick={() => navigate('/dashboard')}
         disabled={isPrinting || disabled}
-        className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium flex-shrink-0 transition-all duration-180"
+        className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium flex-shrink-0 transition-[color,opacity]"
         style={{
           transitionProperty: 'color, opacity',
           transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)',

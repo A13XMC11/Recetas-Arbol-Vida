@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
@@ -29,27 +29,28 @@ export function useAuthProvider(): AuthContextValue {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [role, setRole] = useState<Role>(null)
+  // undefined = primer run aún no procesado; distingue de null (sin sesión)
+  const lastUserIdRef = useRef<string | null | undefined>(undefined)
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      const u = data.session?.user ?? null
-      setUser(u)
-      if (u) {
-        const r = await fetchRole(u.id)
-        setRole(r)
-      }
-      setLoading(false)
-    })
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const u = session?.user ?? null
-      setUser(u)
-      if (u) {
-        const r = await fetchRole(u.id)
-        setRole(r)
-      } else {
-        setRole(null)
+      const userId = u?.id ?? null
+
+      // Solo actualizar user/role cuando la identidad cambia realmente.
+      // TOKEN_REFRESHED produce un nuevo objeto User con el mismo ID — ignorarlo
+      // evita re-renders en cascada en todas las páginas.
+      if (userId !== lastUserIdRef.current) {
+        lastUserIdRef.current = userId
+        setUser(u)
+        if (u) {
+          const r = await fetchRole(u.id)
+          setRole(r)
+        } else {
+          setRole(null)
+        }
       }
+
       setLoading(false)
     })
 

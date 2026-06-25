@@ -47,7 +47,7 @@ export default function InventoryPage() {
   useEffect(() => {
     if (!user) return
     loadData()
-  }, [user, loadData])
+  }, [user?.id, loadData])
 
   async function handleBarcodeDetected(barcode: string) {
     setScanState({ phase: 'idle' }) // cierra la cámara primero
@@ -66,7 +66,7 @@ export default function InventoryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f0f7f4' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F7F4' }}>
         <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
       </div>
     )
@@ -74,21 +74,21 @@ export default function InventoryPage() {
 
   return (
     <AppShell profile={profile}>
-      <div className="min-h-screen" style={{ background: '#f0f7f4' }}>
+      <div className="min-h-screen" style={{ background: '#F2F7F4' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Inventario</h1>
-              <p className="text-gray-500 text-sm mt-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#0D1F17] tracking-tight">Inventario</h1>
+              <p className="text-[#5A7063] text-sm mt-1">
                 {items.length} {items.length === 1 ? 'producto' : 'productos'}
               </p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setScanState({ phase: 'scanning' })}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border-2 transition-[background-color,border-color,color]"
                 style={{ borderColor: '#00BFA5', color: '#00897B' }}
                 title="Escanear código de barras"
               >
@@ -126,10 +126,10 @@ export default function InventoryPage() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-[background-color,border-color,color] cursor-pointer ${
                     activeCategory === cat
                       ? 'text-white shadow-sm'
-                      : 'bg-white text-gray-500 border border-gray-200 hover:border-gray-300'
+                      : 'bg-white text-[#5A7063] border border-[#DCE8DF] hover:border-[#1B5E35]/30 hover:text-[#1B5E35]'
                   }`}
                   style={activeCategory === cat ? { background: '#1B5E35' } : undefined}
                 >
@@ -141,37 +141,38 @@ export default function InventoryPage() {
 
           {/* Lista */}
           {items.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-16 flex flex-col items-center gap-3">
-              <Package size={40} className="text-gray-200" />
-              <p className="text-gray-400 text-sm font-medium">Sin productos aún</p>
+            <div className="bg-white rounded-2xl border border-[#DCE8DF] shadow-sm py-16 flex flex-col items-center gap-3">
+              <Package size={40} className="text-[#C5D9CA]" />
+              <p className="text-[#5A7063] text-sm font-medium">Sin productos aún</p>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="text-sm font-semibold"
+                className="text-sm font-semibold cursor-pointer"
                 style={{ color: '#1B5E35' }}
               >
                 Agregar el primer producto
               </button>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-[#DCE8DF] shadow-sm overflow-hidden">
               {filtered.length === 0 ? (
-                <p className="text-center py-10 text-gray-400 text-sm">Sin productos en esta categoría.</p>
+                <p className="text-center py-10 text-[#5A7063] text-sm">Sin productos en esta categoría.</p>
               ) : (
-                <div className="divide-y divide-gray-50">
-                  {filtered.map(item => (
+                <div className="divide-y divide-[#F0F5F1]">
+                  {filtered.map((item, index) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/70 transition-colors"
+                      className="fade-up flex items-center gap-3 px-4 py-3.5 hover:bg-[#F8FAF9] transition-colors"
+                      style={{ animationDelay: `${Math.min(index * 35, 180)}ms` }}
                     >
                       <div
                         className="flex-1 min-w-0 cursor-pointer"
                         onClick={() => navigate(`/inventory/${item.id}`)}
                       >
                         <div className="flex items-center gap-1.5">
-                          <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                          <ChevronRight size={13} className="text-gray-300 flex-shrink-0" />
+                          <p className="text-sm font-medium text-[#0D1F17] truncate">{item.name}</p>
+                          <ChevronRight size={13} className="text-[#C5D9CA] flex-shrink-0" />
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5">{item.category}</p>
+                        <p className="text-xs text-[#5A7063] mt-0.5">{item.category}</p>
                       </div>
                       <StockBadge current={item.current_stock} minimum={item.min_stock} unit={item.unit} />
                       <div className="flex gap-1 flex-shrink-0">

@@ -24,25 +24,30 @@ export default function InventoryItemPage() {
 
   const loadData = useCallback(async () => {
     if (!id) return
-    const [prof, itm, movs] = await Promise.all([
-      getProfile(),
-      getInventoryItem(id),
-      getMovementsForItem(id),
-    ])
-    setProfile(prof)
-    if (!itm) {
-      navigate('/inventory', { replace: true })
-      return
+    try {
+      const [prof, itm, movs] = await Promise.all([
+        getProfile(),
+        getInventoryItem(id),
+        getMovementsForItem(id),
+      ])
+      setProfile(prof)
+      if (!itm) {
+        navigate('/inventory', { replace: true })
+        return
+      }
+      setItem(itm)
+      setMovements(movs)
+    } catch {
+      // error de red — mantener estado actual
+    } finally {
+      setLoading(false)
     }
-    setItem(itm)
-    setMovements(movs)
-    setLoading(false)
   }, [id, navigate])
 
   useEffect(() => {
     if (!user) return
     loadData()
-  }, [user, loadData])
+  }, [user?.id, loadData])
 
   async function handleDelete() {
     if (!id || !item) return

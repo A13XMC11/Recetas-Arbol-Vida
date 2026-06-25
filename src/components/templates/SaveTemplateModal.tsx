@@ -27,8 +27,8 @@ export default function SaveTemplateModal({ onSave, onClose }: SaveTemplateModal
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+    <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <div
@@ -55,7 +55,7 @@ export default function SaveTemplateModal({ onSave, onClose }: SaveTemplateModal
           onKeyDown={e => e.key === 'Enter' && handleSave()}
           placeholder="Ej: Antibiótico adultos, Gripe niños..."
           autoFocus
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 mb-4"
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color] text-gray-800 placeholder-gray-400 mb-4"
         />
 
         {error && (

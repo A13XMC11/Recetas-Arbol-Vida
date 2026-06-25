@@ -1,33 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0f7f4;
-  --foreground: #1a2e1a;
+  /* Surfaces */
+  --background: #F2F7F4;
+  --surface: #ffffff;
+  --surface-2: #EEF5F0;
+
+  /* Brand */
+  --green-forest: #0C1E14;
   --green-deep: #1B5E35;
   --green-mid: #2E7D32;
   --green-light: #43A047;
-  --teal: #00BFA5;
+  --teal: #00A896;
   --teal-light: #80CBC4;
 
-  /* Emil's Design Engineering - Custom easing curves */
+  /* Text */
+  --foreground: #0D1F17;
+  --text-muted: #5A7063;
+
+  /* Border */
+  --border: #DCE8DF;
+
+  /* Custom easing curves — never use built-in ease-in for UI */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar personalizada con animaciones fluidas */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
+/* Scrollbar — brand-tinted */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #a5d6a7;
-  border-radius: 3px;
+  background: #B2CFBA;
+  border-radius: 99px;
   transition: background 180ms var(--ease-out);
 }
 ::-webkit-scrollbar-thumb:hover { background: #2E7D32; }
@@ -65,10 +80,148 @@ body {
   animation: spin-fast 0.8s linear infinite;
 }
 
+/* =====================================================
+   ANIMATION KEYFRAMES — Emil's Design Engineering
+   ===================================================== */
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal enters from scale(0.97) — nothing appears from nothing */
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Drawer slides from left with iOS-like curve */
+@keyframes drawer-slide-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Stagger list items — fade + subtle rise */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error/alert entrance */
+@keyframes alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   ANIMATION UTILITY CLASSES
+   ===================================================== */
+
+.modal-overlay {
+  animation: overlay-fade-in 150ms var(--ease-out) forwards;
+}
+
+.modal-panel {
+  animation: modal-scale-in 220ms var(--ease-out) forwards;
+}
+
+.drawer-slide {
+  animation: drawer-slide-in 280ms var(--ease-drawer) forwards;
+}
+
+.fade-up {
+  opacity: 0;
+  animation: fade-up 280ms var(--ease-out) forwards;
+}
+
+.alert-in {
+  animation: alert-in 200ms var(--ease-out) forwards;
+}
+
+/* Bottom sheet slide-up (mobile drawer style) */
+@keyframes sheet-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.sheet-panel {
+  transform-origin: bottom center;
+  animation: sheet-slide-up 280ms var(--ease-drawer) forwards;
+}
+
+/* =====================================================
+   GLOBAL BUTTON PRESS FEEDBACK
+   Specificity (0,1,1) beats Tailwind utilities (0,1,0)
+   ===================================================== */
+
+button:not([disabled]) {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease,
+    opacity 150ms ease,
+    transform 160ms var(--ease-out);
+}
+
+button:not([disabled]):active {
+  transform: scale(0.97);
+}
+
+/* Guard hover-only effects from touch devices */
+@media (hover: none) {
+  button:not([disabled]):hover {
+    background-color: revert;
+  }
+}
+
+/* =====================================================
+   INPUT TRANSITIONS — only animate what changes
+   border-color + box-shadow on focus, nothing else
+   Specificity (0,1,1) beats Tailwind utility (0,1,0)
+   ===================================================== */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select {
+  transition:
+    border-color 150ms var(--ease-out),
+    box-shadow 150ms var(--ease-out);
+}
+
 @media print {
   @page {
     size: A5 landscape;
     margin: 0;
+  }
+
+  html, body {
+    width: 210mm;
+    height: 148mm;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   body > *:not(#print-root) {
@@ -77,6 +230,8 @@ body {
 
   #print-root {
     display: block !important;
+    width: 210mm;
+    height: 148mm;
   }
 
   .prescription-sheet {
@@ -86,6 +241,7 @@ body {
     flex-direction: row !important;
     overflow: hidden !important;
     background: white !important;
+    page-break-inside: avoid !important;
   }
 
   .prescription-half {

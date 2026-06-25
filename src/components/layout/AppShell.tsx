@@ -66,16 +66,16 @@ export default function AppShell({ profile, children }: AppShellProps) {
     return (
       <>
         {/* Logo */}
-        <div className="flex items-center gap-3 px-6 py-6 border-b border-white/10">
-          <TreeLogo size={36} />
+        <div className="flex items-center gap-3 px-5 py-5 border-b border-white/[0.07]">
+          <TreeLogo size={34} />
           <div>
-            <p className="text-white font-bold text-sm leading-tight">Fundación</p>
-            <p className="text-white font-bold text-sm leading-tight">Árbol de Vida</p>
+            <p className="text-white/90 font-semibold text-sm leading-tight tracking-tight">Fundación</p>
+            <p className="text-white/90 font-semibold text-sm leading-tight tracking-tight">Árbol de Vida</p>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-5 space-y-1">
+        <nav className="flex-1 px-3 py-5 space-y-0.5">
           {navItems.map(({ href, icon: Icon, label }) => {
             const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
             const isInventory = href === '/inventory'
@@ -85,13 +85,13 @@ export default function AppShell({ profile, children }: AppShellProps) {
                 to={href}
                 onClick={onNav}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all',
+                  'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-[background-color,color] duration-150 cursor-pointer',
                   active
-                    ? 'bg-white/20 text-white shadow-sm'
-                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    ? 'bg-emerald-500/[0.13] text-emerald-300 font-semibold'
+                    : 'text-white/40 hover:text-white/80 hover:bg-white/[0.05]'
                 )}
               >
-                <Icon size={18} />
+                <Icon size={17} strokeWidth={active ? 2.5 : 2} />
                 <span className="flex-1">{label}</span>
                 {isInventory && lowStockCount > 0 && !active && (
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs font-bold leading-none">
@@ -104,16 +104,16 @@ export default function AppShell({ profile, children }: AppShellProps) {
         </nav>
 
         {/* Perfil + logout */}
-        <div className="px-4 pb-5 border-t border-white/10 pt-4">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 bg-white/20 text-white">
-              {initials ?? <Stethoscope size={15} />}
+        <div className="px-3 pb-5 border-t border-white/[0.07] pt-4">
+          <div className="flex items-start gap-3 mb-3 px-1">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 bg-emerald-500/20 text-emerald-300 border border-emerald-500/20">
+              {initials ?? <Stethoscope size={14} />}
             </div>
             <div className="min-w-0">
-              <p className="text-white text-sm font-semibold truncate">
+              <p className="text-white/80 text-sm font-semibold truncate leading-tight">
                 {profile?.full_name || 'Configurar perfil'}
               </p>
-              <p className="text-white/60 text-xs truncate">
+              <p className="text-white/30 text-xs truncate mt-0.5">
                 {profile?.specialty || ''}
               </p>
             </div>
@@ -121,9 +121,9 @@ export default function AppShell({ profile, children }: AppShellProps) {
           <button
             onClick={handleLogout}
             disabled={logoutLoading}
-            className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors w-full px-2 py-1.5 rounded-lg hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 text-white/30 hover:text-white/70 text-xs transition-colors w-full px-2 py-1.5 rounded-lg hover:bg-white/[0.05] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            <LogOut size={15} />
+            <LogOut size={13} />
             {logoutLoading ? 'Cerrando...' : 'Cerrar sesión'}
           </button>
         </div>
@@ -134,21 +134,15 @@ export default function AppShell({ profile, children }: AppShellProps) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar desktop */}
-      <aside
-        className="hidden lg:flex flex-col w-64 min-h-screen flex-shrink-0"
-        style={{ background: 'linear-gradient(180deg, #1B5E35 0%, #00897B 60%, #00BFA5 100%)' }}
-      >
+      <aside className="hidden lg:flex flex-col w-64 min-h-screen flex-shrink-0 bg-[#0C1E14]">
         <NavContent />
       </aside>
 
       {/* Mobile top bar */}
-      <div
-        className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 shadow-md"
-        style={{ background: 'linear-gradient(135deg, #1B5E35, #00897B)' }}
-      >
-        <div className="flex items-center gap-3">
-          <TreeLogo size={28} />
-          <span className="text-white font-bold text-sm">Árbol de Vida</span>
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 bg-[#0C1E14] shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <TreeLogo size={26} />
+          <span className="text-white/90 font-semibold text-sm tracking-tight">Árbol de Vida</span>
         </div>
         <div className="flex items-center gap-2">
           {lowStockCount > 0 && role === 'admin' && (
@@ -161,7 +155,7 @@ export default function AppShell({ profile, children }: AppShellProps) {
           )}
           <button
             onClick={() => setDrawerOpen(true)}
-            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 rounded-xl text-white/50 hover:text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
           >
             <Menu size={22} />
           </button>
@@ -171,18 +165,17 @@ export default function AppShell({ profile, children }: AppShellProps) {
       {/* Mobile drawer overlay */}
       {drawerOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-50 flex"
+          className="modal-overlay lg:hidden fixed inset-0 z-50 flex"
           onClick={() => setDrawerOpen(false)}
         >
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <aside
-            className="relative flex flex-col w-72 min-h-screen z-10"
-            style={{ background: 'linear-gradient(180deg, #1B5E35 0%, #00897B 60%, #00BFA5 100%)' }}
+            className="drawer-slide relative flex flex-col w-72 min-h-screen z-10 bg-[#0C1E14]"
             onClick={e => e.stopPropagation()}
           >
             <button
               onClick={() => setDrawerOpen(false)}
-              className="absolute top-4 right-4 p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
             >
               <X size={20} />
             </button>

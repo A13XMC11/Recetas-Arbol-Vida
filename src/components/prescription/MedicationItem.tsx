@@ -47,7 +47,7 @@ export default function MedicationItem({
             value={medication.name}
             onChange={e => onChange(medication.id, 'name', e.target.value)}
             placeholder="Ej: Amoxicilina"
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[border-color,box-shadow] text-gray-800 placeholder-gray-400"
           />
         </div>
 
@@ -61,7 +61,7 @@ export default function MedicationItem({
             onChange={e => onChange(medication.id, 'presentation', e.target.value)}
             placeholder="Ej: 500mg cápsulas"
             list={`presentation-${medication.id}`}
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[border-color,box-shadow] text-gray-800 placeholder-gray-400"
           />
           <datalist id={`presentation-${medication.id}`}>
             {PRESENTATION_OPTIONS.map(opt => (
@@ -79,7 +79,7 @@ export default function MedicationItem({
             value={medication.quantity}
             onChange={e => onChange(medication.id, 'quantity', e.target.value)}
             placeholder="Ej: 20 cápsulas"
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[border-color,box-shadow] text-gray-800 placeholder-gray-400"
           />
         </div>
 
@@ -93,7 +93,7 @@ export default function MedicationItem({
             onChange={e => onChange(medication.id, 'posology', e.target.value)}
             placeholder="Ej: 1 cápsula cada 8 horas"
             list={`posology-${medication.id}`}
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[border-color,box-shadow] text-gray-800 placeholder-gray-400"
           />
           <datalist id={`posology-${medication.id}`}>
             {POSOLOGY_PRESETS.map(opt => (
@@ -111,7 +111,7 @@ export default function MedicationItem({
             value={medication.instructions}
             onChange={e => onChange(medication.id, 'instructions', e.target.value)}
             placeholder="Ej: Tomar con comida, durante 7 días"
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[border-color,box-shadow] text-gray-800 placeholder-gray-400"
           />
         </div>
       </div>

@@ -40,29 +40,29 @@ export default function RightHalf({ prescription, profile }: RightHalfProps) {
           }}
         >
           {medsWithInstructions.map((med, i) => (
-            <p key={i} style={{ fontSize: '7pt', color: '#333', margin: 0, marginBottom: '3px', lineHeight: 1.5 }}>
+            <p key={i} style={{ fontSize: '8.5pt', color: '#333', margin: 0, marginBottom: '3px', lineHeight: 1.5 }}>
               <span style={{ fontWeight: 700, color: '#1B5E35' }}>{med.name}:</span>{' '}{med.instructions}
             </p>
           ))}
           {prescription.instructions ? (
-            <p style={{ fontSize: '7pt', color: '#333', margin: 0, marginTop: medsWithInstructions.length > 0 ? '4px' : 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+            <p style={{ fontSize: '8.5pt', color: '#333', margin: 0, marginTop: medsWithInstructions.length > 0 ? '4px' : 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
               — {prescription.instructions}
             </p>
           ) : medsWithInstructions.length === 0 ? (
-            <p style={{ fontSize: '7pt', color: '#aaa', margin: 0 }}>—</p>
+            <p style={{ fontSize: '8.5pt', color: '#aaa', margin: 0 }}>—</p>
           ) : null}
         </div>
       </div>
 
       <div style={{ marginTop: '6px' }}>
-        <p style={{ fontSize: '7.5pt', fontWeight: 700, color: '#333', margin: 0 }}>
+        <p style={{ fontSize: '9pt', fontWeight: 700, color: '#333', margin: 0 }}>
           <span style={{ color: '#1B5E35' }}>PRÓXIMA CITA:</span>{' '}
           {prescription.next_appointment || '—'}
         </p>
       </div>
 
       <div style={{ marginTop: 'auto', paddingTop: '6px', textAlign: 'right' }}>
-        <p style={{ fontSize: '5.5pt', color: '#bbb', margin: 0, fontStyle: 'italic' }}>
+        <p style={{ fontSize: '7pt', color: '#bbb', margin: 0, fontStyle: 'italic' }}>
           Corte por la línea punteada
         </p>
       </div>

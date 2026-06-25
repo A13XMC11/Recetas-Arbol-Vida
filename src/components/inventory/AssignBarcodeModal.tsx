@@ -34,8 +34,8 @@ export default function AssignBarcodeModal({ barcode, items, onAssigned, onClose
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
-      <div className="bg-white w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col">
+    <div className="modal-overlay fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
+      <div className="sheet-panel bg-white w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col">
 
         {/* Handle bar móvil */}
         <div className="flex justify-center pt-3 pb-0 sm:hidden flex-shrink-0">
@@ -71,7 +71,7 @@ export default function AssignBarcodeModal({ barcode, items, onAssigned, onClose
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar producto..."
               autoFocus
-              className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+              className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800 placeholder-gray-400"
             />
           </div>
         </div>
@@ -86,7 +86,7 @@ export default function AssignBarcodeModal({ barcode, items, onAssigned, onClose
                 <button
                   key={item.id}
                   onClick={() => setSelected(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-[background-color,border-color,color,opacity] ${
                     selected === item.id
                       ? 'border-2 border-emerald-400 bg-emerald-50'
                       : 'border border-gray-100 hover:border-gray-200 hover:bg-gray-50'
@@ -113,7 +113,7 @@ export default function AssignBarcodeModal({ barcode, items, onAssigned, onClose
           <button
             onClick={handleAssign}
             disabled={!selected || saving}
-            className="w-full py-3.5 rounded-2xl text-white font-bold text-sm disabled:opacity-40 transition-all active:scale-95"
+            className="w-full py-3.5 rounded-2xl text-white font-bold text-sm disabled:opacity-40 transition-[background-color,border-color,color,opacity] active:scale-95"
             style={{ background: 'linear-gradient(135deg, #1B5E35, #00BFA5)' }}
           >
             {saving ? 'Guardando...' : 'Asociar código a este producto'}

@@ -21,19 +21,19 @@ export default function PrintHeader({ profile }: PrintHeaderProps) {
           <TreeLogo size={30} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontWeight: 800, fontSize: '7.5pt', color: '#1B5E35', lineHeight: 1.2, margin: 0 }}>
+          <p style={{ fontWeight: 800, fontSize: '9pt', color: '#1B5E35', lineHeight: 1.2, margin: 0 }}>
             Fundación Árbol de Vida
           </p>
-          <p style={{ fontSize: '6pt', color: '#555', margin: 0, lineHeight: 1.3 }}>
+          <p style={{ fontSize: '7.5pt', color: '#555', margin: 0, lineHeight: 1.3 }}>
             Dirección: Inglaterra N31-187 y Mariana de Jesús
           </p>
-          <p style={{ fontSize: '6pt', color: '#555', margin: 0, lineHeight: 1.3 }}>
+          <p style={{ fontSize: '7.5pt', color: '#555', margin: 0, lineHeight: 1.3 }}>
             Teléfono: {profile?.phone || '—'}
           </p>
-          <p style={{ fontSize: '7pt', fontWeight: 700, color: '#1B5E35', margin: 0, marginTop: '2px' }}>
+          <p style={{ fontSize: '8.5pt', fontWeight: 700, color: '#1B5E35', margin: 0, marginTop: '2px' }}>
             {profile?.full_name || 'Nombre del médico'}
           </p>
-          <p style={{ fontSize: '6pt', color: '#555', margin: 0, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+          <p style={{ fontSize: '7.5pt', color: '#555', margin: 0, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
             {profile?.specialty || 'Especialidad'}
           </p>
         </div>

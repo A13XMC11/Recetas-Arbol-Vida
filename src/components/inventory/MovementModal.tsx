@@ -43,8 +43,8 @@ export default function MovementModal({ item, defaultType = 'entrada', onCreated
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+    <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-base font-bold text-gray-900">Registrar movimiento</h2>
@@ -63,7 +63,7 @@ export default function MovementModal({ item, defaultType = 'entrada', onCreated
           <button
             type="button"
             onClick={() => { setType('entrada'); setError(null) }}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border-2 transition-[background-color,border-color,color,opacity] ${
               type === 'entrada'
                 ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                 : 'border-gray-200 text-gray-500 hover:border-gray-300'
@@ -75,7 +75,7 @@ export default function MovementModal({ item, defaultType = 'entrada', onCreated
           <button
             type="button"
             onClick={() => { setType('salida'); setError(null) }}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border-2 transition-[background-color,border-color,color,opacity] ${
               type === 'salida'
                 ? 'border-red-400 bg-red-50 text-red-700'
                 : 'border-gray-200 text-gray-500 hover:border-gray-300'
@@ -97,7 +97,7 @@ export default function MovementModal({ item, defaultType = 'entrada', onCreated
               onChange={e => { setQuantity(Math.max(1, parseInt(e.target.value) || 1)); setError(null) }}
               min={1}
               autoFocus
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800"
             />
             {type === 'salida' && (
               <p className="text-xs text-gray-400 mt-1">
@@ -115,7 +115,7 @@ export default function MovementModal({ item, defaultType = 'entrada', onCreated
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder={type === 'entrada' ? 'Ej: Compra semanal' : 'Ej: Usado en consulta'}
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400"
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-[background-color,border-color,color,opacity] text-gray-800 placeholder-gray-400"
             />
           </div>
 
@@ -134,7 +134,7 @@ export default function MovementModal({ item, defaultType = 'entrada', onCreated
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold disabled:opacity-60 transition-all"
+              className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold disabled:opacity-60 transition-[background-color,border-color,color,opacity]"
               style={{
                 background: type === 'entrada'
                   ? 'linear-gradient(135deg, #1B5E35, #00BFA5)'

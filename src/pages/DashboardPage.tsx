@@ -36,7 +36,7 @@ export default function DashboardPage() {
     }
 
     loadData()
-  }, [user])
+  }, [user?.id])
 
   function handlePrescriptionDeleted(id: string) {
     setPrescriptions(prev => prev.filter(p => p.id !== id))
@@ -44,7 +44,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#f0f7f4' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F7F4' }}>
         <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
       </div>
     )
@@ -52,11 +52,11 @@ export default function DashboardPage() {
 
   return (
     <AppShell profile={profile}>
-      <div className="min-h-screen" style={{ background: '#f0f7f4' }}>
+      <div className="min-h-screen" style={{ background: '#F2F7F4' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Nueva Receta</h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#0D1F17] tracking-tight">Nueva Receta</h1>
+            <p className="text-[#5A7063] text-sm mt-1">
               Completa los datos del paciente y los medicamentos
             </p>
           </div>
