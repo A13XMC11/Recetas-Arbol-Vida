@@ -34,24 +34,26 @@ export function useAuthProvider(): AuthContextValue {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const u = session?.user ?? null
-      const userId = u?.id ?? null
+      try {
+        const u = session?.user ?? null
+        const userId = u?.id ?? null
 
-      // Solo actualizar user/role cuando la identidad cambia realmente.
-      // TOKEN_REFRESHED produce un nuevo objeto User con el mismo ID — ignorarlo
-      // evita re-renders en cascada en todas las páginas.
-      if (userId !== lastUserIdRef.current) {
-        lastUserIdRef.current = userId
-        setUser(u)
-        if (u) {
-          const r = await fetchRole(u.id)
-          setRole(r)
-        } else {
-          setRole(null)
+        // Solo actualizar user/role cuando la identidad cambia realmente.
+        // TOKEN_REFRESHED produce un nuevo objeto User con el mismo ID — ignorarlo
+        // evita re-renders en cascada en todas las páginas.
+        if (userId !== lastUserIdRef.current) {
+          lastUserIdRef.current = userId
+          setUser(u)
+          if (u) {
+            const r = await fetchRole(u.id)
+            setRole(r)
+          } else {
+            setRole(null)
+          }
         }
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
