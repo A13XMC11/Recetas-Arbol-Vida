@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { X } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { X, Camera, CheckCircle } from 'lucide-react'
 import { INVENTORY_CATEGORIES, INVENTORY_UNITS } from '@/types'
 import type { InventoryCategory, InventoryUnit } from '@/types'
-import { createInventoryItem } from '@/lib/api/inventory'
+import { createInventoryItem, createMovement } from '@/lib/api/inventory'
 
 interface AddItemModalProps {
   onCreated: () => void
@@ -16,9 +16,70 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
     unit: 'unidad' as InventoryUnit,
     min_stock: 5,
     barcode: '',
+    initial_stock: 0,
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [scanning, setScanning] = useState(false)
+  const [scannerSupported, setScannerSupported] = useState(false)
+  const [scanSuccess, setScanSuccess] = useState(false)
+
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const animFrameRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    setScannerSupported('BarcodeDetector' in window)
+    return () => stopScanner()
+  }, [])
+
+  function stopScanner() {
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop())
+      streamRef.current = null
+    }
+    setScanning(false)
+  }
+
+  async function startScanner() {
+    setError(null)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      })
+      streamRef.current = stream
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+      }
+      setScanning(true)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const detector = new (window as any).BarcodeDetector({
+        formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'qr_code'],
+      })
+
+      const scan = async () => {
+        if (!videoRef.current || !streamRef.current) return
+        try {
+          const barcodes = await detector.detect(videoRef.current)
+          if (barcodes.length > 0) {
+            setForm(f => ({ ...f, barcode: barcodes[0].rawValue }))
+            setScanSuccess(true)
+            stopScanner()
+            setTimeout(() => setScanSuccess(false), 2500)
+            return
+          }
+        } catch { /* frame not ready yet */ }
+        animFrameRef.current = requestAnimationFrame(scan)
+      }
+
+      animFrameRef.current = requestAnimationFrame(scan)
+    } catch {
+      setError('No se pudo acceder a la cámara. Verifica los permisos.')
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -27,7 +88,10 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
     setError(null)
     try {
       const result = await createInventoryItem({
-        ...form,
+        name: form.name,
+        category: form.category,
+        unit: form.unit,
+        min_stock: form.min_stock,
         barcode: form.barcode.trim() || undefined,
       })
       if (result.error) {
@@ -35,6 +99,16 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
         setSaving(false)
         return
       }
+
+      if (form.initial_stock > 0 && result.data) {
+        await createMovement({
+          item_id: result.data.id,
+          type: 'entrada',
+          quantity: form.initial_stock,
+          notes: 'Stock inicial',
+        })
+      }
+
       onCreated()
     } catch {
       setError('Error de conexión. Por favor intenta de nuevo.')
@@ -42,13 +116,18 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
     }
   }
 
+  function handleClose() {
+    stopScanner()
+    onClose()
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-bold text-gray-900">Nuevo producto</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
           >
             <X size={18} />
@@ -94,30 +173,89 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">
-              Stock mínimo — alerta cuando esté por debajo de este número
-            </label>
-            <input
-              type="number"
-              value={form.min_stock}
-              onChange={e => setForm(f => ({ ...f, min_stock: Math.max(1, parseInt(e.target.value) || 1) }))}
-              min={1}
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                Stock mínimo
+              </label>
+              <input
+                type="number"
+                value={form.min_stock}
+                onChange={e => setForm(f => ({ ...f, min_stock: Math.max(1, parseInt(e.target.value) || 1) }))}
+                min={1}
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                Cantidad actual
+              </label>
+              <input
+                type="number"
+                value={form.initial_stock}
+                onChange={e => setForm(f => ({ ...f, initial_stock: Math.max(0, parseInt(e.target.value) || 0) }))}
+                min={0}
+                placeholder="0"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800"
+              />
+            </div>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1.5">
-              Código de barras (opcional — si el producto lo tiene)
+              Código de barras (opcional)
             </label>
-            <input
-              type="text"
-              value={form.barcode}
-              onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))}
-              placeholder="Ej: 7501000000000"
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 font-mono"
-            />
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.barcode}
+                  onChange={e => setForm(f => ({ ...f, barcode: e.target.value }))}
+                  placeholder="Escríbelo o escanéalo"
+                  className={`w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all text-gray-800 placeholder-gray-400 font-mono ${
+                    scanSuccess ? 'border-emerald-400 bg-emerald-50' : 'border-gray-200'
+                  }`}
+                />
+                {scanSuccess && (
+                  <CheckCircle
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500"
+                    size={16}
+                  />
+                )}
+              </div>
+              {scannerSupported && (
+                <button
+                  type="button"
+                  onClick={scanning ? stopScanner : startScanner}
+                  className={`px-3 py-2.5 rounded-xl border text-sm font-medium transition-all flex items-center gap-1.5 shrink-0 ${
+                    scanning
+                      ? 'border-red-200 text-red-600 bg-red-50 hover:bg-red-100'
+                      : 'border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100'
+                  }`}
+                >
+                  {scanning ? <X size={15} /> : <Camera size={15} />}
+                  {scanning ? 'Cancelar' : 'Escanear'}
+                </button>
+              )}
+            </div>
+
+            {scanning && (
+              <div className="mt-2 rounded-xl overflow-hidden border border-emerald-200 bg-black relative">
+                <video
+                  ref={videoRef}
+                  className="w-full h-44 object-cover"
+                  playsInline
+                  muted
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-3/4 h-16 border-2 border-emerald-400 rounded-lg" />
+                </div>
+                <p className="absolute bottom-2 left-0 right-0 text-center text-white text-xs">
+                  Apunta al código de barras
+                </p>
+              </div>
+            )}
           </div>
 
           {error && (
@@ -127,7 +265,7 @@ export default function AddItemModal({ onCreated, onClose }: AddItemModalProps) 
           <div className="flex gap-3 pt-1">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
             >
               Cancelar
